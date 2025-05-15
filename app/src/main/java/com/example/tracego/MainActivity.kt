@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tracego.ui.screen.AuthScreen
 import com.example.tracego.ui.theme.TraceGoTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,49 +32,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             TraceGoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    Column {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .height(50.dp)
-                                .background(MaterialTheme.colorScheme.primary),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Primary color",
-                                modifier = Modifier
-                            )
-                        }
+                    AuthScreen()
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .height(50.dp)
-                                .background(MaterialTheme.colorScheme.secondary),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Secondary color",
-                                modifier = Modifier
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .height(50.dp)
-                                .background(MaterialTheme.colorScheme.tertiary),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Tertiary color",
-                                modifier = Modifier
-                            )
-                        }
-                    }
                 }
             }
         }
