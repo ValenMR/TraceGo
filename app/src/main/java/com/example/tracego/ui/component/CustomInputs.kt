@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -24,7 +26,9 @@ fun CustomInput(
     onChange: (String) -> Unit,
     label: String,
     keyboardCapitalization: KeyboardCapitalization? = null,
-    modifier: Modifier = Modifier
+    keyboardType: KeyboardType,
+    modifier: Modifier = Modifier,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(modifier = modifier) {
         Text(
@@ -32,7 +36,7 @@ fun CustomInput(
             color = MaterialTheme.colorScheme.primary,
             fontSize = 16.sp,
             fontWeight = FontWeight.W300,
-            modifier = modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            modifier = modifier.padding(horizontal = 8.dp, vertical = 2.dp),
         )
 
         BasicTextField(
@@ -49,8 +53,10 @@ fun CustomInput(
                 color = Color(0xFF343434)
             ),
             keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
                 capitalization = keyboardCapitalization ?: KeyboardCapitalization.None
-            )
+            ),
+            visualTransformation = visualTransformation,
         )
     }
 }

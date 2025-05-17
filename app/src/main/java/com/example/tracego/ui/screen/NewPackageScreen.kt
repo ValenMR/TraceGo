@@ -11,11 +11,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tracego.ui.component.CustomButton
+import com.example.tracego.ui.component.CustomHeader
 import com.example.tracego.ui.component.CustomInput
 import com.example.tracego.ui.component.FooterMenu
 
@@ -29,30 +31,7 @@ fun TrackPackageScreen() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Header con gradiente
-        Box(
-            modifier = Modifier
-                .height(135.dp)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary),
-                        start = Offset(0f, 0f),
-                        end = Offset(2000f, 2000f)
-                    )
-                )
-        ) {
-            Text(
-                text = "TraceGo",
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 16.dp)
-            )
-
-        }
+        CustomHeader()
 
         Box(
             modifier = Modifier
@@ -79,17 +58,20 @@ fun TrackPackageScreen() {
             CustomInput(
                 input = nombrePaquete,
                 onChange = { nombrePaquete = it },
-                label = "Nombre del paquete"
+                label = "Nombre del paquete",
+                keyboardType = KeyboardType.Text,
             )
             CustomInput(
                 input = codigoPaquete,
                 onChange = { codigoPaquete = it },
-                label = "Código del paquete"
+                label = "Código del paquete",
+                keyboardType = KeyboardType.Text,
             )
             CustomInput(
                 input = codigoProveedor,
                 onChange = { codigoProveedor = it },
-                label = "Código del proveedor"
+                label = "Código del proveedor",
+                keyboardType = KeyboardType.Text,
             )
 
             Spacer(modifier = Modifier.height(24.dp))

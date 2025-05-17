@@ -39,6 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +48,6 @@ import com.example.tracego.R
 import com.example.tracego.ui.component.CustomButton
 import com.example.tracego.ui.component.CustomInput
 
-//vista de la autenticacion
 @Composable
 fun AuthScreen(){
 
@@ -62,7 +63,6 @@ fun AuthScreen(){
             modifier = Modifier
                 .height(250.dp)
                 .fillMaxWidth(1f)
-                //.background(MaterialTheme.colorScheme.primary)
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary),
@@ -79,7 +79,6 @@ fun AuthScreen(){
                     fontSize = 42.sp,
                     modifier = Modifier.padding(5.dp),
                     fontWeight = FontWeight.Bold
-
                 )
                 Text(
                     text = "¡Bienvenido a TraceGo!",
@@ -88,7 +87,6 @@ fun AuthScreen(){
                     modifier = Modifier.padding(5.dp),
                 )
             }
-
         }
 
         Text(
@@ -103,13 +101,11 @@ fun AuthScreen(){
             textAlign = TextAlign.Center
         )
 
-        //inputs
         Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(30.dp))
                 .padding(horizontal = 35.dp, vertical = 3.dp),
-                //.shadow(elevation = 8.dp, shape = RoundedCornerShape(30.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
 
@@ -118,6 +114,7 @@ fun AuthScreen(){
                 onChange = { email = it },
                 label = "Correo Eletrónico",
                 keyboardCapitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Email,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -128,7 +125,9 @@ fun AuthScreen(){
                 onChange = { password = it },
                 label = "Contraseña",
                 keyboardCapitalization = KeyboardCapitalization.None,
-                modifier = Modifier.fillMaxWidth()
+                keyboardType = KeyboardType.Password,
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
             )
 
             Spacer(modifier = Modifier.height(52.dp))
