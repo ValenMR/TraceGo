@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.tracego.ui.component.InfoPackagesCard
 import com.example.tracego.ui.screen.AuthScreen
+import com.example.tracego.ui.screen.MapScreen
 import com.example.tracego.ui.screen.PackageListScreen
 import com.example.tracego.ui.theme.TraceGoTheme
 
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TraceGoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    PackageListScreen()
+                    MapScreen()
                 }
             }
         }
