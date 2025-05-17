@@ -11,7 +11,10 @@ import com.example.tracego.ui.component.FooterMenu
 import com.example.tracego.ui.component.InfoPackagesCard
 
 @Composable
-fun PackageListScreen() {
+fun PackageListScreen(
+    onClickMapButton: () -> Unit,
+    onClickNewPackageButton: () -> Unit,
+) {
     val itemsList = List(10) { "Package name $it" }
 
     Scaffold(
@@ -19,7 +22,12 @@ fun PackageListScreen() {
             CustomHeader()
         },
         bottomBar = {
-            FooterMenu(selectedScreen = 1)
+            FooterMenu(
+                selectedScreen = 0,
+                onClickPackageListButton = {},
+                onClickMapButton = onClickMapButton,
+                onClickNewPackageButton = onClickNewPackageButton
+            )
         }
     ) { innerPadding ->
         LazyColumn(

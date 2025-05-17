@@ -22,7 +22,10 @@ import com.example.tracego.ui.component.CustomInput
 import com.example.tracego.ui.component.FooterMenu
 
 @Composable
-fun TrackPackageScreen() {
+fun NewPackageListScreen(
+    onClickPackageListButton: () -> Unit,
+    onClickMapButton: () -> Unit,
+) {
     var nombrePaquete by remember { mutableStateOf("") }
     var codigoPaquete by remember { mutableStateOf("") }
     var codigoProveedor by remember { mutableStateOf("") }
@@ -86,13 +89,12 @@ fun TrackPackageScreen() {
         }
 
         // Footer
-        FooterMenu(selectedScreen = 2)
+        FooterMenu(
+            selectedScreen = 2,
+            onClickPackageListButton = onClickPackageListButton,
+            onClickMapButton = onClickMapButton,
+            onClickNewPackageButton = { }
+        )
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun TrackPackageScreenPreview() {
-    TrackPackageScreen()
 }
 

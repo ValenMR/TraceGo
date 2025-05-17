@@ -1,8 +1,6 @@
 package com.example.tracego.ui.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,12 +17,10 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -36,6 +32,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FooterMenu(
     selectedScreen: Int,
+    onClickPackageListButton: () -> Unit,
+    onClickMapButton: () -> Unit,
+    onClickNewPackageButton: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -67,9 +66,18 @@ fun FooterMenu(
                 2 -> offsetElement3 = (-45).dp
             }
 
-            IconButtonCircle(icon = Icons.Default.Email, offsetY = offsetElement1)
-            IconButtonCircle(icon = Icons.Default.Place, offsetY = offsetElement2)
-            IconButtonCircle(icon = Icons.Default.Search, offsetY = offsetElement3)
+            IconButtonCircle(
+                icon = Icons.Default.Email,
+                offsetY = offsetElement1,
+                onClick = onClickPackageListButton)
+            IconButtonCircle(
+                icon = Icons.Default.Place,
+                offsetY = offsetElement2,
+                onClick = onClickMapButton)
+            IconButtonCircle(
+                icon = Icons.Default.Search,
+                offsetY = offsetElement3,
+                onClick = onClickNewPackageButton)
         }
     }
 }
@@ -77,7 +85,8 @@ fun FooterMenu(
 @Composable
 fun IconButtonCircle(
     icon: ImageVector,
-    offsetY: Dp
+    offsetY: Dp,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -85,7 +94,7 @@ fun IconButtonCircle(
             .offset(y = offsetY)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary)
-            .clickable { },
+            .clickable (onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(

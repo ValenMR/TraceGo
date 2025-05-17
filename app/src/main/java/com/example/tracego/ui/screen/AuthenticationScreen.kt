@@ -49,7 +49,9 @@ import com.example.tracego.ui.component.CustomButton
 import com.example.tracego.ui.component.CustomInput
 
 @Composable
-fun AuthScreen(){
+fun AuthScreen(
+    onClickContinue: () -> Unit
+){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -134,7 +136,7 @@ fun AuthScreen(){
 
             //botón
             CustomButton(
-                onClick = { /* TODO: lógica iniciar sesión */ },
+                onClick = onClickContinue,
                 text = "Continuar",
                 //modifier = Modifier.fillMaxWidth()
                 modifier = Modifier

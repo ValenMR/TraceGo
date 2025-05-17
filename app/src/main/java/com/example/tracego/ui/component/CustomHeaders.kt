@@ -25,7 +25,10 @@ fun CustomHeader() {
             .fillMaxWidth()
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary),
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary
+                    ),
                     start = Offset(0f, 0f),
                     end = Offset(2000f, 2000f)
                 )
@@ -40,6 +43,5 @@ fun CustomHeader() {
                 .align(Alignment.BottomEnd)
                 .padding(end = 16.dp, bottom = 16.dp)
         )
-
     }
 }

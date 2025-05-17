@@ -56,4 +56,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("androidx.compose.runtime:runtime")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.4")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 }
