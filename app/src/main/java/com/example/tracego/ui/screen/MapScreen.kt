@@ -1,5 +1,6 @@
 package com.example.tracego.ui.screen
 
+import android.preference.PreferenceManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,14 +22,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tracego.data.model.Package
 import com.example.tracego.ui.component.CustomHeader
 import com.example.tracego.ui.component.FooterMenu
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
+import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tracego.data.api.RetrofitConfig
+import com.example.tracego.data.repository.LocationRepository
+import com.example.tracego.ui.viewmodel.LocationViewModel
 
 @Composable
 fun MapScreen(
+    paquete: Package,
     onClickPackageListButton: () -> Unit,
-    onClickNewPackageButton: () -> Unit,
+    onClickNewPackageButton: () -> Unit
 ) {
+    val locationViewModel: LocationViewModel = viewModel(
+        factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                val repo = LocationRepository(RetrofitConfig.locationApi)
+                @Suppress("UNCHECKED_CAST")
+                return LocationViewModel(repo) as T
+            }
+        }
+    )
+    val locationState by locationViewModel.location.collectAsState()
+
+    LaunchedEffect(paquete.packageCode) {
+        locationViewModel.fetchLocation(paquete.packageCode)
+    }
+
     Scaffold(
         topBar = {
             CustomHeader()
@@ -49,9 +83,9 @@ fun MapScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 Box(
                     modifier = Modifier
@@ -59,16 +93,27 @@ fun MapScreen(
                             MaterialTheme.colorScheme.primary,
                             RoundedCornerShape(15.dp)
                         )
-                        .size(350.dp)
-                )
+                        .fillMaxWidth(1f)
+                        .size(300.dp)
+                ) {
+                    if (locationState != null) {
+                        MyLocationOsmdroidMap(
+                            latitude = locationState!!.latitude.toDouble(),
+                            longitude = locationState!!.longitude.toDouble()
+                        )
+                    } else {
+                        Text("Cargando ubicación...", color = Color.White)
+                    }
+                }
 
                 InfoPackages(
-                    packageName = "Package name",
-                    estimatedDate = "17/05/2000",
-                    packageState = "In your city"
+                    packageName = paquete.packageName,
+                    estimatedDate = paquete.estimatedDeliveryDate,
+                    creationDate = paquete.creationDate,
+                    stage = paquete.stage,
+                    status = paquete.status
                 )
             }
-
         }
     }
 }
@@ -77,7 +122,9 @@ fun MapScreen(
 fun InfoPackages(
     packageName: String,
     estimatedDate: String,
-    packageState: String
+    creationDate: String,
+    stage: String,
+    status: String
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -107,23 +154,22 @@ fun InfoPackages(
                 )
                 TextInfo(
                     key = "Creation date: ",
-                    value = "17/05/2000"
+                    value = creationDate
                 )
                 TextInfo(
                     key = "Estimated delivery date: ",
-                    value = "17/05/2025"
+                    value = estimatedDate
                 )
                 TextInfo(
                     key = "Stage: ",
-                    value = "In the process of packaging"
+                    value = stage
                 )
                 TextInfo(
                     key = "Status: ",
-                    value = "In process"
+                    value = status
                 )
             }
         }
-
     }
 }
 
@@ -145,4 +191,41 @@ fun TextInfo(
             fontSize = 14.sp,
         )
     }
+}
+
+
+@Composable
+fun MyLocationOsmdroidMap(latitude: Double, longitude: Double) {
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+        onDispose { }
+    }
+
+    val position = GeoPoint(latitude, longitude)
+
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { ctx ->
+            MapView(ctx).apply {
+                setMultiTouchControls(false)
+                setTileSource(TileSourceFactory.MAPNIK)
+
+                controller.setCenter(position)
+                controller.setZoom(20.0)
+
+                val marker = Marker(this)
+                marker.position = position
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker.title = "Tu paquete"
+                overlays.add(marker)
+
+                invalidate()
+            }
+        },
+        update = { mapView ->
+            mapView.controller.setCenter(position)
+        }
+    )
 }

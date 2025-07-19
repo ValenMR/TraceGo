@@ -22,6 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,17 +46,39 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tracego.R
 import com.example.tracego.ui.component.CustomButton
 import com.example.tracego.ui.component.CustomInput
+import com.example.tracego.ui.viewmodel.AuthUiState
+import com.example.tracego.ui.viewmodel.AuthViewModel
 
 @Composable
 fun AuthScreen(
-    onClickContinue: () -> Unit
+    onClickContinue: () -> Unit,
+    authViewModel: AuthViewModel = viewModel()
 ){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val uiState by authViewModel.uiState.collectAsState()
+    val isLoading by authViewModel.isLoading.collectAsState()
+    val errorMessage by authViewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is AuthUiState.Success -> {
+                onClickContinue()
+            }
+            is AuthUiState.Error -> {
+                // Todo
+            }
+            else -> {
+                // Todo
+            }
+        }
+    }
 
     Column (
         modifier = Modifier
@@ -114,7 +138,7 @@ fun AuthScreen(
             CustomInput(
                 input = email,
                 onChange = { email = it },
-                label = "Correo Eletrónico",
+                label = "Usuario",
                 keyboardCapitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Email,
                 modifier = Modifier.fillMaxWidth()
@@ -134,24 +158,25 @@ fun AuthScreen(
 
             Spacer(modifier = Modifier.height(52.dp))
 
-            //botón
             CustomButton(
-                onClick = onClickContinue,
-                text = "Continuar",
-                //modifier = Modifier.fillMaxWidth()
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        authViewModel.login(email, password)
+                    }
+                },
+                text = if (isLoading) "Iniciando sesión..." else "Continuar",
+                enabled = !isLoading && email.isNotEmpty() && password.isNotEmpty(),
                 modifier = Modifier
                     .padding(horizontal = 55.dp, vertical = 3.dp)
             )
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            //ícono circular
             Row (
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                //llamando la funcion de la imagen del logo
                 CircleIcon(
                     imageRes = R.drawable.logo_original
                 )
@@ -168,12 +193,8 @@ fun AuthScreen(
                     .fillMaxWidth()
                     .padding(vertical = 13.dp),
                 fontWeight = FontWeight.Bold
-
-
             )
-
         }
-
     }
 }
 

@@ -1,40 +1,33 @@
 package com.example.tracego
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tracego.ui.screen.AuthScreen
-import com.example.tracego.ui.screen.MapScreen
-import com.example.tracego.ui.screen.NewPackageListScreen
+import androidx.navigation.navArgument
 import com.example.tracego.ui.screen.PackageListScreen
+import com.example.tracego.ui.screen.NewPackageListScreen
+import com.example.tracego.ui.screen.MapScreen
+import com.example.tracego.ui.screen.AuthScreen
 import com.example.tracego.ui.theme.TraceGoTheme
-
-enum class TraceGoScreen() {
-    Auth,
-    Map,
-    NewPackage,
-    PackageList
-}
+import com.google.gson.Gson
+import java.net.URLDecoder
+import java.net.URLEncoder
+import com.example.tracego.data.model.Package
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             TraceGoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    TraceGoApp()
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    AppNavHost()
                 }
             }
         }
@@ -42,36 +35,44 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TraceGoApp(
-    navController: NavHostController = rememberNavController()
-) {
-    NavHost(
-        navController = navController,
-        startDestination = TraceGoScreen.Auth.name,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        composable(route = TraceGoScreen.Auth.name) {
+fun AppNavHost() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "auth") {
+        composable("auth") {
             AuthScreen(
-                onClickContinue = { navController.navigate(TraceGoScreen.PackageList.name) }
+                onClickContinue = {
+                    navController.navigate("packageList") {
+                        popUpTo("auth") { inclusive = true }
+                    }
+                }
             )
         }
-        composable(route = TraceGoScreen.PackageList.name) {
+        composable("packageList") {
             PackageListScreen(
-                onClickMapButton = { navController.navigate(TraceGoScreen.Map.name) },
-                onClickNewPackageButton = { navController.navigate(TraceGoScreen.NewPackage.name) }
+                onClickMapButton = {  },
+                onClickNewPackageButton = { navController.navigate("newPackage") },
+                onPackageMapClick = { paquete ->
+                    val packageJson = URLEncoder.encode(Gson().toJson(paquete), "UTF-8")
+                    navController.navigate("mapScreen/$packageJson")
+                }
             )
         }
-        composable(route = TraceGoScreen.Map.name) {
-            MapScreen(
-                onClickPackageListButton = { navController.navigate(TraceGoScreen.PackageList.name) },
-                onClickNewPackageButton = { navController.navigate(TraceGoScreen.NewPackage.name) },
-            )
-        }
-        composable(route = TraceGoScreen.NewPackage.name) {
+        composable("newPackage") {
             NewPackageListScreen(
-                onClickPackageListButton = { navController.navigate(TraceGoScreen.PackageList.name) },
-                onClickMapButton = { navController.navigate(TraceGoScreen.Map.name) },
+                onClickPackageListButton = { navController.popBackStack("packageList", false) },
+                onClickMapButton = { navController.navigate("packageList") }
+            )
+        }
+        composable(
+            "mapScreen/{packageJson}",
+            arguments = listOf(navArgument("packageJson") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val packageJson = backStackEntry.arguments?.getString("packageJson")
+            val paquete = Gson().fromJson(URLDecoder.decode(packageJson, "UTF-8"), Package::class.java)
+            MapScreen(
+                paquete = paquete,
+                onClickPackageListButton = { navController.popBackStack("packageList", false) },
+                onClickNewPackageButton = { navController.navigate("newPackage") }
             )
         }
     }

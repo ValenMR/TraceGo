@@ -27,12 +27,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tracego.data.model.Package
+import androidx.compose.foundation.clickable
 
 @Composable
 fun InfoPackagesCard(
     packageName: String,
     estimatedDate: String,
-    packageState: String
+    packageState: String,
+    onIconClick: (() -> Unit)? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -73,22 +76,23 @@ fun InfoPackagesCard(
                         fontSize = 14.sp,
                     )
                 }
-                IconCircle(Icons.Default.Place)
+                IconCircle(Icons.Default.Place, onClick = onIconClick)
             }
         }
-
     }
 }
 
 @Composable
 fun IconCircle(
     icon: ImageVector,
+    onClick: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
             .size(70.dp)
             .clip(CircleShape)
-            .background(Color.White),
+            .background(Color.White)
+            .let { if (onClick != null) it.clickable { onClick() } else it },
         contentAlignment = Alignment.Center
     ) {
         Icon(

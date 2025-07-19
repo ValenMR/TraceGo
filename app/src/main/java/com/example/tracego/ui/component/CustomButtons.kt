@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.sp
 fun CustomButton(
     onClick: () -> Unit,
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
@@ -25,7 +26,8 @@ fun CustomButton(
         shape = RoundedCornerShape(24.dp),
         modifier = modifier
             .width(300.dp)
-            .height(50.dp)
+            .height(50.dp),
+        enabled = enabled
     ) {
         Text(
             text = text,
